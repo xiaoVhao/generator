@@ -1,0 +1,107 @@
+package com.world.controller.admin.${moduleName}.${classname};
+
+import com.world.model.entity.${moduleName}.${className};
+import com.world.service.${moduleName}.${className}Service;
+import com.world.util.Message;
+import com.world.util.date.TimeUtil;
+import com.world.web.Page;
+import com.world.web.action.AdminAction;
+import com.world.web.convention.annotation.FunctionAction;
+import me.chanjar.weixin.common.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Date;
+
+
+/**
+ * ${comments}管理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@FunctionAction(jspPath = "/admins/${moduleName}/${classname}/", des = "${comments}管理")
+public class Index extends AdminAction {
+    private ${className}Service ${classname}Service = new ${className}Service();
+    private ${className} ${classname} = new ${className}();
+
+
+    @Page(Viewer = DEFAULT_INDEX)
+    public void index(){
+        try {
+            Integer pageNo   = intParam("page",1);
+            Integer pageSize = intParam("pageSize",20);
+            if(pageNo == 0){
+                pageNo =1;
+            }
+            if(pageSize == 0){
+                pageSize =20;
+            }
+
+            ${className} ${classname} = new ${className}();
+
+            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},pageNo, pageSize,status);
+            setAttr("dataList",dataList.getResults());
+            setAttr("itemCount", dataList.getTotalCount());
+            setPaging(dataList.getTotalCount(), pageNo, pageSize);
+        } catch (Exception e) {
+            log.error("${comments}管理：", e);
+        }
+    }
+
+    @Page(Viewer = DEFAULT_AORU)
+    public void aoru() {
+        int id = intParam("id");
+        ${className} entity = ${classname}Service.getById(id);
+        setAttr("entity", entity);
+        setAttr("pId", id);
+    }
+
+    @Page(Viewer = XML)
+    public void doAoru() {
+        if(!codeCorrect(XML)){
+            return;
+        }
+        try {
+#foreach ($column in $columns)
+#if(${column.attrType}=="Integer")
+            int ${column.attrname} = intParam("${column.attrname}");
+#elseif(${column.attrType}=="BigDecimal")
+            BigDecimal ${column.attrname} = new BigDecimal(param("${column.attrname}"));
+#elseif(${column.attrType}=="Date")
+            Date ${column.attrname} = Date.from(LocalDateTime.parse(super.param("${column.attrname}"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant());
+#else
+            String ${column.attrname} = param("${column.attrname}");
+#end
+
+#end
+
+            ${className} ${classname} = new ${className}();
+#foreach ($column in $columns)
+            ${classname}.set${column.attrName}(${column.attrname});
+#end
+
+            if (${classname}.getId() > 0) {
+                Message message = ${classname}Service.update(${classname});
+                WriteRight(message.getMsg());
+            } else {
+                Message message = ${classname}Service.save(${classname});
+                WriteRight(message.getMsg());
+            }
+        } catch (Exception e) {
+            log.error("admin修改或新增${comments}管理失败：", e);
+            WriteError("操作失败");
+        }
+    }
+
+    @Page(Viewer = DEFAULT_AJAX)
+    public void ajax() {
+        index();
+    }
+
+
+}
+

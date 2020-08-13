@@ -1,0 +1,81 @@
+package com.world.service.${moduleName};
+
+import com.world.model.dao.${moduleName}.${className}Dao;
+import com.world.model.entity.${moduleName}.${className};
+import com.world.model.vo.Page;
+import com.world.util.Message;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public class ${className}Service {
+
+    private ${className}Dao ${className}Dao = new ${className}Dao();
+    private ${className} ${classname} = new ${className}();
+
+
+    public ${className} getById(int id){
+        return saleProjectDao.getById(id);
+    }
+
+    /**
+     * 分页获取
+     * @param ${classname}
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize,int status){
+        Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize,status);
+        return page;
+    }
+    public List<${className}> getList(${className} ${classname}){
+        return  ${classname}Dao.select(${classname});
+    }
+
+    /**
+     * 更新
+     * @param ${classname}
+     */
+    public Message update(${className} ${classname}){
+        Message message = new Message();
+        message.setSuc(false);
+
+        boolean updateStatus = ${classname}Dao.update(${classname});
+        if(updateStatus){
+            message.setMsg("更新成功!");
+            message.setSuc(true);
+            return message;
+        }
+        message.setMsg("操作失败!");
+        return message;
+    }
+
+
+    /**
+     * 插入
+     * @param ${classname}
+     */
+    public Message save(${className} ${classname}){
+        Message message = new Message();
+        message.setSuc(false);
+
+        boolean updateStatus = ${classname}Dao.save(${classname});
+
+        if(updateStatus){
+            message.setMsg("新增记录成功!");
+            message.setSuc(true);
+            return message;
+        }
+        message.setMsg("操作失败!");
+        return message;
+    }
+
+}

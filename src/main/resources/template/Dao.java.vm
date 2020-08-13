@@ -1,0 +1,157 @@
+package com.world.model.dao.${moduleName};
+
+import com.world.data.mysql.DataDaoSupport;
+import com.world.data.mysql.OneSql;
+import com.world.data.mysql.Query;
+import com.world.model.entity.sale.${className};
+import com.world.model.vo.Page;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public class ${className}Dao extends DataDaoSupport<${className}> {
+
+    public static final String DB_NAME = "${databaseName}";
+
+    private static final Object[] EMPTY = new Object[]{};
+
+    public ${className}Dao() {
+        setDatabase(DB_NAME);
+    }
+
+    /**
+     * 获取记录
+     * @return
+     */
+    public List<${className}> select(${className} ${classname}) {
+        Query<${className}> query = getQuery();
+        query.setSql("select * from ${tableName} where 1=1");
+        List<Object> params = new ArrayList<Object>();
+
+        if(${classname} != null){
+#foreach ($column in $columns)
+            if(${classname}.get${column.attrName}() != null){
+                query.append(" and ${column.columnName} = ?");
+                params.add(${classname}.get${column.attrName}());
+            }
+#end
+        }
+
+#if(${hasCreateTime})
+        query.append(" order by createTime desc");
+#else
+        query.append(" order by ${pk.columnName} desc");
+#end
+
+        query.setParams(params.toArray());
+        query.setCls(${className}.class);
+        List<${className}> dataList = new ArrayList<>();
+        dataList = this.find();
+
+        return dataList;
+    }
+
+
+    /**
+     * 分页获取
+     * @return
+     */
+    public Page<${className}> getByPage(${className} ${classname}, Integer pageNo, Integer pageSize) {
+        if (pageNo==null || pageNo == 0){
+            pageNo = 1;
+        }
+        if (pageSize==null || pageSize==0){
+            pageSize = 20;
+        }
+        Page<${className}>  page  = new Page<>(pageNo, pageSize);
+        Query<${className}> query = getQuery();
+        query.setSql("select * from ${tableName} where 1=1");
+        List<Object> params = new ArrayList<Object>();
+
+        if(${classname} != null){
+#foreach ($column in $columns)
+            if(${classname}.get${column.attrName}() != null){
+                query.append(" and ${column.columnName} = ?");
+                params.add(${classname}.get${column.attrName}());
+            }
+#end
+        }
+
+#if(${hasCreateTime})
+        query.append(" order by createTime desc");
+#else
+        query.append(" order by ${pk.columnName} desc");
+#end
+        query.setParams(params.toArray());
+        query.setCls(${className}.class);
+        List<${className}> dataList = new ArrayList<>();
+        try {
+            int count = this.count();
+            if (count>0){
+                dataList = this.findPage(pageNo, pageSize);
+            }
+            page.setResults(dataList);
+            page.setTotalCount(count);
+        } catch (Exception e){
+            throw  e;
+        }
+        return page;
+    }
+
+
+    /**
+     * 根据主键获取
+     * @param id
+     * @return
+     */
+    public ${className} getById(Integer id) {
+        return getT("select * from ${tableName} where ${pk.columnName} = ?", new Object[]{id}, ${className}.class);
+    }
+
+
+
+    /**
+     * 更新信息
+     * @param ${classname}
+     * @return
+     */
+    public boolean update(${className} ${classname}){
+        return this.update("${updateSql}",
+                new Object[]{${updateParam}
+                }) > 0;
+    }
+
+    /**
+     * 插入记录
+     * @param ${classname}
+     * @return
+     */
+    public boolean save(${className} ${classname}){
+        return  super.save("${insertSql}",
+                new Object[]{${insertParam}
+                }) >0;
+    }
+
+
+    public OneSql saveOneSql(${className} ${classname}){
+        return  new OneSql("${insertSql}",1,
+                new Object[]{${insertParam}
+                }, DB_NAME) ;
+    }
+
+
+    public OneSql updateOneSql(SaleRecord saleRecord){
+        return new OneSql("${updateSql}", 1,
+                new Object[]{${updateParam}},
+                DB_NAME);
+    }
+
+}
