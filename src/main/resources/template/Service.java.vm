@@ -18,7 +18,6 @@ import java.util.Objects;
 public class ${className}Service {
 
     private ${className}Dao ${className}Dao = new ${className}Dao();
-    private ${className} ${classname} = new ${className}();
 
 
     public ${className} getById(int id){

@@ -3,7 +3,7 @@ package com.world.model.dao.${moduleName};
 import com.world.data.mysql.DataDaoSupport;
 import com.world.data.mysql.OneSql;
 import com.world.data.mysql.Query;
-import com.world.model.entity.sale.${className};
+import com.world.model.entity.${moduleName}.${className};
 import com.world.model.vo.Page;
 
 import java.sql.Timestamp;
@@ -148,7 +148,7 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
     }
 
 
-    public OneSql updateOneSql(SaleRecord saleRecord){
+    public OneSql updateOneSql(${className} ${classname}){
         return new OneSql("${updateSql}", 1,
                 new Object[]{${updateParam}},
                 DB_NAME);

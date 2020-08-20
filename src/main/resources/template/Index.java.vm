@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Date;
+import java.time.ZoneId;
 
 
 /**
@@ -26,7 +27,6 @@ import java.util.Date;
 @FunctionAction(jspPath = "/admins/${moduleName}/${classname}/", des = "${comments}管理")
 public class Index extends AdminAction {
     private ${className}Service ${classname}Service = new ${className}Service();
-    private ${className} ${classname} = new ${className}();
 
 
     @Page(Viewer = DEFAULT_INDEX)

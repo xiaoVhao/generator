@@ -160,7 +160,7 @@ public class GenUtils {
                     buffer.append(Character.toUpperCase(ch));
                     uncapitalizeNext = false;
                 } else {
-                    buffer.append(ch);
+                    buffer.append(i==0 ? Character.toUpperCase(ch) : ch);
                 }
             }
 
@@ -202,7 +202,7 @@ public class GenUtils {
         }
 
         if (template.contains("Entity.java.vm" )) {
-            return packagePath + "entity" + File.separator + className + "Entity.java";
+            return packagePath + "entity" + File.separator + className + ".java";
         }
 
         if (template.contains("Dao.java.vm" )) {
@@ -266,7 +266,7 @@ public class GenUtils {
         );
 
         sb.deleteCharAt(sb.length()-1);
-        sb.append("  where `").append(tableEntity.getPk().getColumnName()).append("` = ?") ;
+        sb.append("  where `").append(tableEntity.getClassname()).append(tableEntity.getPk().getColumnName()).append("` = ?") ;
 
         return sb.toString();
     }
