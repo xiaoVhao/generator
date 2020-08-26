@@ -214,7 +214,7 @@ public class GenUtils {
         }
 
         if (template.contains("Index.java.vm" )) {
-            return packagePath + "controller" + File.separator + className + "Index.java";
+            return packagePath + "controller" + File.separator + className + File.separator+ "Index.java";
         }
 
         if (template.contains("ajax.jsp.vm" )) {
