@@ -1,4 +1,8 @@
+#if(${moduleName} != "")
 package com.world.model.entity.${moduleName};
+#else
+package com.world.model.entity.${className};
+#end
 
 import com.world.data.mysql.Bean;
 import java.util.Date;

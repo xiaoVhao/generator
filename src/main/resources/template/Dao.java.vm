@@ -1,9 +1,16 @@
+#if(${moduleName} != "")
 package com.world.model.dao.${moduleName};
+
+import com.world.model.entity.${moduleName}.${className};
+#else
+package com.world.model.dao.${className};
+
+import com.world.model.entity.${className}.${className};
+#end
 
 import com.world.data.mysql.DataDaoSupport;
 import com.world.data.mysql.OneSql;
 import com.world.data.mysql.Query;
-import com.world.model.entity.${moduleName}.${className};
 import com.world.model.vo.Page;
 
 import java.sql.Timestamp;
@@ -153,5 +160,13 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
                 new Object[]{${updateParam}},
                 DB_NAME);
     }
+
+#if(${hasStatus})
+    public boolean updateStatus(int id,int newStatus,int expectStatus){
+        return this.update("update ${tableName} set status = ? where status = ? and ${pk.columnName} = ?",
+                new Object[]{newStatus,expectStatus,id},
+                DB_NAME) > 0;
+    }
+#end
 
 }

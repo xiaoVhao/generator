@@ -1,7 +1,15 @@
+#if(${moduleName} != "")
 package com.world.service.${moduleName};
 
 import com.world.model.dao.${moduleName}.${className}Dao;
 import com.world.model.entity.${moduleName}.${className};
+#else
+package com.world.service.${moduleName};
+
+import com.world.model.dao.${className}.${className}Dao;
+import com.world.model.entity.${className}.${className};
+#end
+
 import com.world.model.vo.Page;
 import com.world.util.Message;
 
@@ -21,7 +29,7 @@ public class ${className}Service {
 
 
     public ${className} getById(int id){
-        return saleProjectDao.getById(id);
+        return ${className}Dao.getById(id);
     }
 
     /**
@@ -31,8 +39,8 @@ public class ${className}Service {
      * @param pageSize
      * @return
      */
-    public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize,int status){
-        Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize,status);
+    public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize){
+        Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize);
         return page;
     }
     public List<${className}> getList(${className} ${classname}){
@@ -76,5 +84,23 @@ public class ${className}Service {
         message.setMsg("操作失败!");
         return message;
     }
+
+#if(${hasStatus})
+    public Message updateStatus(int id,int newStatus,int expectStatus){
+        Message message = new Message();
+        message.setSuc(false);
+
+        boolean updateStatus = ${classname}Dao.updateStatus(id,newStatus,expectStatus);
+
+        if(updateStatus){
+            message.setMsg("操作成功!");
+            message.setSuc(true);
+            return message;
+        }
+
+        message.setMsg("操作失败!");
+        return message;
+    }
+#end
 
 }

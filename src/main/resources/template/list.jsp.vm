@@ -50,6 +50,19 @@ function reload(){
     Close();
     location.reload(true);
 }
+
+#if(${hasStatus})
+function updateStatus(id){
+    var url = "/admin//${moduleName}/${classname}/updateStatus?id=" + id;
+    Iframe({
+        Url : url,
+        Width : 580,
+        Height : 500,
+        scrolling : 'yes',
+        Title:"更新状态"
+    });
+}
+#end
 </script>
 
 </body>

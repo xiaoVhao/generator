@@ -1,7 +1,17 @@
+
+#if(${moduleName} != "")
 package com.world.controller.admin.${moduleName}.${classname};
+
 
 import com.world.model.entity.${moduleName}.${className};
 import com.world.service.${moduleName}.${className}Service;
+#else
+package com.world.controller.admin.${classname};
+
+
+import com.world.model.entity.${className};
+import com.world.service.${className}.${className}Service;
+#end
 import com.world.util.Message;
 import com.world.util.date.TimeUtil;
 import com.world.web.Page;
@@ -24,7 +34,11 @@ import java.time.ZoneId;
  * @author ${author}
  * @date ${datetime}
  */
+#if(${moduleName} != "")
 @FunctionAction(jspPath = "/admins/${moduleName}/${classname}/", des = "${comments}管理")
+#else
+@FunctionAction(jspPath = "/admins/${classname}/", des = "${comments}管理")
+#end
 public class Index extends AdminAction {
     private ${className}Service ${classname}Service = new ${className}Service();
 
@@ -102,6 +116,48 @@ public class Index extends AdminAction {
         index();
     }
 
+
+#if(${hasStatus})
+
+#if(${moduleName} != "")
+    @Page(Viewer = "/admins/${moduleName}/${classname}/updateStatus.jsp")
+#else
+    @Page(Viewer = "/admins/${classname}/updateStatus.jsp")
+#end
+    public void updateStatus() {
+        int id = intParam("id");
+        setAttr("id", id);
+    }
+
+    /**
+   * 更新状态
+   */
+    @Page(Viewer = XML)
+    public void doUpdateStatus() {
+        try {
+            int id=intParam("id");
+            int status = intParam("status");
+
+            try {
+                Message message = ${classname}Service.updateStatus(id, status,0);
+                if(message.isSuc()){
+                    WriteRight("更新成功");
+                    return;
+                }else {
+                    WriteError("更新失败");
+                    return;
+                }
+
+            } catch (Exception e){
+                log.error("updateNotify error "+e.getMessage());
+                WriteError("更新失败");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+#end
 
 }
 

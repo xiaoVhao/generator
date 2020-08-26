@@ -33,6 +33,7 @@ public class GenUtils {
         templates.add("template/ajax.jsp.vm");
         templates.add("template/aoru.jsp.vm");
         templates.add("template/list.jsp.vm");
+        templates.add("template/updateStatus.jsp.vm");
         return templates;
     }
 
@@ -45,6 +46,7 @@ public class GenUtils {
         Properties config = getConfig();
         boolean hasBigDecimal = false;
         boolean hasCreateTime = false;
+        boolean hasStatus = false;
         //表信息
         TableEntity tableEntity = new TableEntity();
         tableEntity.setTableName(table.get("tableName" ));
@@ -83,6 +85,10 @@ public class GenUtils {
                 hasCreateTime = true;
             }
 
+            if(!hasStatus && "status".equalsIgnoreCase(columnEntity.getAttrName())){
+                hasStatus = true;
+            }
+
             columsList.add(columnEntity);
         }
         tableEntity.setColumns(columsList);
@@ -107,8 +113,6 @@ public class GenUtils {
         map.put("classname", tableEntity.getClassname());
         map.put("pathName", tableEntity.getClassname().toLowerCase());
         map.put("columns", tableEntity.getColumns());
-        map.put("hasBigDecimal", hasBigDecimal);
-        map.put("hasBigDecimal", hasBigDecimal);
         map.put("mainPath", mainPath);
         map.put("databaseName", config.getProperty("databaseName" ));
         map.put("package", config.getProperty("package" ));
@@ -120,11 +124,18 @@ public class GenUtils {
         map.put("insertParam",getInsertParam(tableEntity));
         map.put("updateParam",getUpdateParam(tableEntity));
         map.put("dollC","$");
+        map.put("hasBigDecimal", hasBigDecimal);
+        map.put("hasCreateTime", hasCreateTime);
+        map.put("hasStatus", hasStatus);
         VelocityContext context = new VelocityContext(map);
 
         //获取模板列表
         List<String> templates = getTemplates();
         for (String template : templates) {
+
+            if(template.contains("updateStatus.jsp.vm") && !hasStatus){
+                continue;
+            }
             //渲染模板
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, "UTF-8" );
@@ -228,6 +239,10 @@ public class GenUtils {
         if (template.contains("list.jsp.vm" )) {
             return packagePath + "jsp" + File.separator + className + File.separator + "list.jsp";
         }
+
+        if (template.contains("updateStatus.jsp.vm" )) {
+            return packagePath + "jsp" + File.separator + className + File.separator + "updateStatus.jsp";
+        }
         return null;
     }
 
@@ -266,7 +281,7 @@ public class GenUtils {
         );
 
         sb.deleteCharAt(sb.length()-1);
-        sb.append("  where `").append(tableEntity.getClassname()).append(tableEntity.getPk().getColumnName()).append("` = ?") ;
+        sb.append("  where `").append(tableEntity.getPk().getColumnName()).append("` = ?") ;
 
         return sb.toString();
     }
@@ -287,6 +302,6 @@ public class GenUtils {
 
        String str = getInsertParam(tableEntity);
 
-        return str + " get"+tableEntity.getPk().getAttrName() + "()";
+        return str + tableEntity.getClassname()+".get"+tableEntity.getPk().getAttrName() + "()";
     }
 }
