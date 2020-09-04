@@ -43,14 +43,7 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
         query.setSql("select * from ${tableName} where 1=1");
         List<Object> params = new ArrayList<Object>();
 
-        if(${classname} != null){
-#foreach ($column in $columns)
-            if(${classname}.get${column.attrName}() != null){
-                query.append(" and ${column.columnName} = ?");
-                params.add(${classname}.get${column.attrName}());
-            }
-#end
-        }
+        setupParam(query,params,${classname});
 
 #if(${hasCreateTime})
         query.append(" order by createTime desc");
@@ -83,14 +76,7 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
         query.setSql("select * from ${tableName} where 1=1");
         List<Object> params = new ArrayList<Object>();
 
-        if(${classname} != null){
-#foreach ($column in $columns)
-            if(${classname}.get${column.attrName}() != null){
-                query.append(" and ${column.columnName} = ?");
-                params.add(${classname}.get${column.attrName}());
-            }
-#end
-        }
+        setupParam(query,params,${classname});
 
 #if(${hasCreateTime})
         query.append(" order by createTime desc");
@@ -164,9 +150,19 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
 #if(${hasStatus})
     public boolean updateStatus(int id,int newStatus,int expectStatus){
         return this.update("update ${tableName} set status = ? where status = ? and ${pk.columnName} = ?",
-                new Object[]{newStatus,expectStatus,id},
-                DB_NAME) > 0;
+                new Object[]{newStatus,expectStatus,id}) > 0;
     }
 #end
+
+    public void setupParam(Query query,List<Object> params,${className} ${classname}){
+        if(${classname} != null){
+#foreach ($column in $columns)
+            if(${classname}.get${column.attrName}() != null){
+                query.append(" and ${column.columnName} = ?");
+                params.add(${classname}.get${column.attrName}());
+            }
+#end
+        }
+    }
 
 }

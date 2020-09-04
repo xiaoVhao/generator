@@ -57,7 +57,7 @@ public class Index extends AdminAction {
 
             ${className} ${classname} = new ${className}();
 
-            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},pageNo, pageSize,status);
+            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},pageNo, pageSize);
             setAttr("dataList",dataList.getResults());
             setAttr("itemCount", dataList.getTotalCount());
             setPaging(dataList.getTotalCount(), pageNo, pageSize);

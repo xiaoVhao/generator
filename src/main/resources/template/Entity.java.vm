@@ -18,7 +18,7 @@ import java.math.BigDecimal;
  * @author ${author}
  * @date ${datetime}
  */
-public class ${className}Entity extends Bean {
+public class ${className} extends Bean {
 
 #foreach ($column in $columns)
     /**

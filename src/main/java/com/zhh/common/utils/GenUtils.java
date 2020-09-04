@@ -143,7 +143,7 @@ public class GenUtils {
 
             try {
                 //添加到zip
-                zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), config.getProperty("package" ), config.getProperty("moduleName" ))));
+                zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), config.getProperty("package" ), config.getProperty("moduleName" ),tableEntity.getClassname())));
                 IOUtils.write(sw.toString(), zip, "UTF-8" );
                 IOUtils.closeQuietly(sw);
                 zip.closeEntry();
@@ -206,7 +206,7 @@ public class GenUtils {
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, String className, String packageName, String moduleName) {
+    public static String getFileName(String template, String className, String packageName, String moduleName,String classname) {
         String packagePath = "main" + File.separator + "java" + File.separator;
         if (StringUtils.isNotBlank(packageName)) {
             packagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
@@ -225,23 +225,23 @@ public class GenUtils {
         }
 
         if (template.contains("Index.java.vm" )) {
-            return packagePath + "controller" + File.separator + className + File.separator+ "Index.java";
+            return packagePath + "controller" + File.separator + classname + File.separator+ "Index.java";
         }
 
         if (template.contains("ajax.jsp.vm" )) {
-            return packagePath + "jsp" + File.separator + className + File.separator + "ajax.jsp";
+            return packagePath + "jsp" + File.separator + classname + File.separator + "ajax.jsp";
         }
 
         if (template.contains("aoru.jsp.vm" )) {
-            return packagePath + "jsp" + File.separator + className  + File.separator + "aoru.jsp";
+            return packagePath + "jsp" + File.separator + classname  + File.separator + "aoru.jsp";
         }
 
         if (template.contains("list.jsp.vm" )) {
-            return packagePath + "jsp" + File.separator + className + File.separator + "list.jsp";
+            return packagePath + "jsp" + File.separator + classname + File.separator + "list.jsp";
         }
 
         if (template.contains("updateStatus.jsp.vm" )) {
-            return packagePath + "jsp" + File.separator + className + File.separator + "updateStatus.jsp";
+            return packagePath + "jsp" + File.separator + classname + File.separator + "updateStatus.jsp";
         }
         return null;
     }

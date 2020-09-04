@@ -25,11 +25,11 @@ import java.util.Objects;
  */
 public class ${className}Service {
 
-    private ${className}Dao ${className}Dao = new ${className}Dao();
+    private ${className}Dao ${classname}Dao = new ${className}Dao();
 
 
     public ${className} getById(int id){
-        return ${className}Dao.getById(id);
+        return ${classname}Dao.getById(id);
     }
 
     /**
