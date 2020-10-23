@@ -8,6 +8,7 @@
 <head>
 <title>${comments}管理</title>
 <jsp:include page="/admins/top.jsp" />
+	<script type="text/javascript" src="${static_domain}/statics/js/common/DatePicker/WdatePicker.js"></script>
 </head>
 <body >
 <div class="mains">
@@ -15,6 +16,36 @@
 		<div class="form-search">
 			<form autocomplete="off" name="searchForm" id="searchContaint">
 				<div id="formSearchContainer">
+#if(${hasUserId})
+				    <p>
+						<span>用户名：</span>
+						<input type="text" id="userName" name="userName"/>
+					</p>
+#end
+#if(${hasCurrencyId})
+					<p>
+						<span>币种：</span>
+						<input type="text" id="currencyName" name="currencyName"/>
+					</p>
+#end
+
+#if(${hasCreateTime})
+                    <p>
+						<span class="formtit">统计时间：</span>
+						<span class="spacing">从</span>
+						<span class="formcon mr_5">
+							<input type="text" class="inputW2 Wdate" id="startTime" name="startTime"
+								   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',lang : 'cn'})"
+								   style="width:140px;"/>
+						</span>
+						<span class="spacing">到</span>
+						<span class="formcon">
+							<input type="text" class="inputW2 Wdate" id="endTime" name="endTime"
+								   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00',lang : 'cn'})"
+								   style="width:140px;"/>
+						</span>
+					</p>
+#end
 
 					<p>
 						<a class="search-submit" id="idSearch" href="javascript:zb.list.search();">查找</a>

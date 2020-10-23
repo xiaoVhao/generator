@@ -47,6 +47,8 @@ public class GenUtils {
         boolean hasBigDecimal = false;
         boolean hasCreateTime = false;
         boolean hasStatus = false;
+        boolean hasUserId = false;
+        boolean hasCurrencyId = false;
         //表信息
         TableEntity tableEntity = new TableEntity();
         tableEntity.setTableName(table.get("tableName" ));
@@ -89,6 +91,14 @@ public class GenUtils {
                 hasStatus = true;
             }
 
+            if(!hasUserId && "userId".equalsIgnoreCase(columnEntity.getAttrName())){
+                hasUserId = true;
+            }
+
+            if(!hasCurrencyId && "currencyId".equalsIgnoreCase(columnEntity.getAttrName())){
+                hasCurrencyId = true;
+            }
+
             columsList.add(columnEntity);
         }
         tableEntity.setColumns(columsList);
@@ -127,6 +137,8 @@ public class GenUtils {
         map.put("hasBigDecimal", hasBigDecimal);
         map.put("hasCreateTime", hasCreateTime);
         map.put("hasStatus", hasStatus);
+        map.put("hasUserId", hasUserId);
+        map.put("hasCurrencyId", hasCurrencyId);
         VelocityContext context = new VelocityContext(map);
 
         //获取模板列表

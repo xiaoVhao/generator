@@ -18,6 +18,9 @@ import com.world.web.Page;
 import com.world.web.action.AdminAction;
 import com.world.web.convention.annotation.FunctionAction;
 import me.chanjar.weixin.common.util.StringUtils;
+import com.world.model.entity.user.User;
+import com.world.model.dao.user.UserDao;
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -41,6 +44,7 @@ import java.time.ZoneId;
 #end
 public class Index extends AdminAction {
     private ${className}Service ${classname}Service = new ${className}Service();
+    private UserDao userDao = new UserDao();
 
 
     @Page(Viewer = DEFAULT_INDEX)
@@ -57,7 +61,28 @@ public class Index extends AdminAction {
 
             ${className} ${classname} = new ${className}();
 
+#if(${hasUserId})
+            String userName = param("userName");
+            if(StringUtils.isNotBlank(userName)){
+                User user = userDao.getByUserName(userName);
+                ${classname}.setUserId(user == null ? 0 : user.getUserIdInt());
+            }
+#end
+#if(${hasCurrencyId})
+            String currencyName = param("currencyName");
+            if(StringUtils.isNotBlank(currencyName)){
+                CoinProps coinProps = DatabasesUtil.getCoin(currencyName);
+                defiincome.setCurrencyId(coinProps == null ? 0 : coinProps.getFundsType());
+            }
+#end
+#if(${hasCreateTime})
+            String    startTime = param("startTime");
+            String    endTime   = param("endTime");
+
+            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},pageNo, pageSize,startTime,endTime);
+#else
             com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},pageNo, pageSize);
+#end
             setAttr("dataList",dataList.getResults());
             setAttr("itemCount", dataList.getTotalCount());
             setPaging(dataList.getTotalCount(), pageNo, pageSize);

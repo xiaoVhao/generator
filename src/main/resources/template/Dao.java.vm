@@ -64,7 +64,11 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
      * 分页获取
      * @return
      */
+#if(${hasCreateTime})
+    public Page<${className}> getByPage(${className} ${classname}, Integer pageNo, Integer pageSize,String startTime,String endTime) {
+#else
     public Page<${className}> getByPage(${className} ${classname}, Integer pageNo, Integer pageSize) {
+#end
         if (pageNo==null || pageNo == 0){
             pageNo = 1;
         }
@@ -79,6 +83,15 @@ public class ${className}Dao extends DataDaoSupport<${className}> {
         setupParam(query,params,${classname});
 
 #if(${hasCreateTime})
+        if(StringUtils.isNotBlank(startTime)){
+            query.append(" and createTime >= ?");
+            params.add(startTime);
+        }
+        if(StringUtils.isNotBlank(endTime)){
+            query.append(" and createTime <= ?");
+            params.add(endTime);
+        }
+
         query.append(" order by createTime desc");
 #else
         query.append(" order by ${pk.columnName} desc");
