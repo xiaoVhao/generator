@@ -2,6 +2,8 @@
 #if(${moduleName} != "")
 package com.world.controller.admin.${moduleName}.${classname};
 
+import java.util.ArrayList;
+
 
 import com.world.model.entity.${moduleName}.${className};
 import com.world.service.${moduleName}.${className}Service;
@@ -12,6 +14,7 @@ package com.world.controller.admin.${classname};
 import com.world.model.entity.${className};
 import com.world.service.${className}.${className}Service;
 #end
+import com.world.util.ExcelManager;
 import com.world.util.Message;
 import com.world.util.date.TimeUtil;
 import com.world.web.Page;
@@ -29,6 +32,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Date;
 import java.time.ZoneId;
+
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 
 
 /**
@@ -163,23 +172,86 @@ public class Index extends AdminAction {
             int id=intParam("id");
             int status = intParam("status");
 
-            try {
-                Message message = ${classname}Service.updateStatus(id, status,0);
-                if(message.isSuc()){
-                    WriteRight("更新成功");
-                    return;
-                }else {
-                    WriteError("更新失败");
-                    return;
-                }
-
-            } catch (Exception e){
-                log.error("updateNotify error "+e.getMessage());
+            Message message = ${classname}Service.updateStatus(id, status,0);
+            if(message.isSuc()){
+                WriteRight("更新成功");
+                return;
+            }else {
                 WriteError("更新失败");
+                return;
+            }
+        } catch (Exception e) {
+            log.error("doUpdateStatus error "+e.getMessage());
+            WriteError("更新失败");
+        }
+    }
+
+
+
+    /**
+     * 记录导出
+     */
+    @Page(Viewer = "")
+    public void export(){
+        OutputStream out = null;
+        try {
+            if (!codeCorrect(XML)) {
+                return;
             }
 
+            ${className} ${classname} = new ${className}();
+
+#if(${hasUserId})
+            String userName = param("userName");
+            if(StringUtils.isNotBlank(userName)){
+                User user = userDao.getByUserName(userName);
+            ${classname}.setUserId(user == null ? 0 : user.getUserIdInt());
+            }
+#end
+#if(${hasCurrencyId})
+            String currencyName = param("currencyName");
+            if(StringUtils.isNotBlank(currencyName)){
+                CoinProps coinProps = DatabasesUtil.getCoin(currencyName);
+                defiincome.setCurrencyId(coinProps == null ? 0 : coinProps.getFundsType());
+            }
+#end
+#if(${hasCreateTime})
+            String    startTime = param("startTime");
+            String    endTime   = param("endTime");
+
+            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},0, 99999,startTime,endTime);
+#else
+            com.world.model.vo.Page<${className}> dataList = ${classname}Service.getList( ${classname},0, 99999);
+#end
+
+            String[]               column  = {${columnSb}};
+            String[]               tabHead = {${headSb}};
+
+            SXSSFWorkbook workbook = ExcelManager.exportNormal(dataList.getResults(), column, tabHead);
+
+//            out = new FileOutputStream(new File(GlobalConfig.getValue("exportExlFileRoot") + "/sale抢购记录.xls"));
+//            workbook.write(out);
+//            out.flush();
+//            out.close();
+//            WriteRight("导出成功");
+
+            out = response.getOutputStream();
+            response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("${comments}.xls", "UTF-8"));
+            response.setContentType("application/msexcel;charset=UTF-8");
+            workbook.write(out);
+            out.flush();
+            out.close();
         } catch (Exception e) {
+            log.error("${comments}记录导出失败",e);
             e.printStackTrace();
+        }finally {
+            if(out != null){
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 #end

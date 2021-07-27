@@ -51,6 +51,7 @@
 						<a class="search-submit" id="idSearch" href="javascript:zb.list.search();">查找</a>
 						<a id="idReset" class="search-submit" href="javascript:zb.list.resetForm();">重置</a>
 						<a class="search-submit"  href="javascript:zb.list.aoru({id:0, width: 500, height: 600});">添加</a>
+                        <a id="exports" class="search-submit" href="javascript:exports();">导出</a>
 					</p>
 				</div>
 		
@@ -84,7 +85,7 @@ function reload(){
 
 #if(${hasStatus})
 function updateStatus(id){
-    var url = "/admin//${moduleName}/${classname}/updateStatus?id=" + id;
+    var url = "/admin/${moduleName}/${classname}/updateStatus?id=" + id;
     Iframe({
         Url : url,
         Width : 580,
@@ -94,6 +95,22 @@ function updateStatus(id){
     });
 }
 #end
+
+
+function exports(mCode) {
+    if (!couldPass) {
+        googleCode("exports", true);
+        return;
+    }
+    couldPass = false;
+    Ask2({
+        Msg: "确定要导出吗？",
+        call: function () {
+            Close();
+            location.href = "/admin/${moduleName}/${classname}/export?mCode=" + mCode;
+        }
+    });
+}
 </script>
 
 </body>

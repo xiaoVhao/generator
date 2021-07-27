@@ -60,7 +60,11 @@ public class GenUtils {
 
         //列信息
         List<ColumnEntity> columsList = new ArrayList<>();
-        for(Map<String, String> column : columns){
+        StringBuilder columnSb= new StringBuilder();
+        StringBuilder headSb= new StringBuilder();
+
+        for(int i = 0;i< columns.size() ; i++){
+            Map<String, String> column = columns.get(i);
             ColumnEntity columnEntity = new ColumnEntity();
             columnEntity.setColumnName(column.get("columnName" ));
             columnEntity.setDataType(column.get("dataType" ));
@@ -100,6 +104,13 @@ public class GenUtils {
             }
 
             columsList.add(columnEntity);
+
+            columnSb.append("\"").append(columnEntity.getColumnName()).append("\"");
+            headSb.append("\"").append(columnEntity.getComments()).append("\"");
+            if(i != columns.size()-1){
+                columnSb.append(",");
+                headSb.append(",");
+            }
         }
         tableEntity.setColumns(columsList);
 
@@ -139,6 +150,8 @@ public class GenUtils {
         map.put("hasStatus", hasStatus);
         map.put("hasUserId", hasUserId);
         map.put("hasCurrencyId", hasCurrencyId);
+        map.put("columnSb",columnSb.toString());
+        map.put("headSb",headSb.toString());
         VelocityContext context = new VelocityContext(map);
 
         //获取模板列表

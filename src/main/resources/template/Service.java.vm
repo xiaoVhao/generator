@@ -40,15 +40,15 @@ public class ${className}Service {
      * @return
      */
 #if(${hasCreateTime})
-        public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize,String startTime,String endTime){
-            Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize,startTime,endTime);
-            return page;
-        }
+    public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize,String startTime,String endTime){
+        Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize,startTime,endTime);
+        return page;
+    }
 #else
-        public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize){
-            Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize);
-            return page;
-        }
+    public Page<${className}> getList(${className} ${classname}, Integer pageNo, Integer pageSize){
+        Page<${className}> page = ${classname}Dao.getByPage(${classname}, pageNo, pageSize);
+        return page;
+    }
 #end
 
     public List<${className}> getList(${className} ${classname}){

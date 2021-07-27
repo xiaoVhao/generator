@@ -2,7 +2,7 @@ spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://172.16.100.130:3306/zb_sale?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+        url: jdbc:mysql://172.16.100.130:3306/zb_stat?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
         username: root
         password: iPYDU0o3MRQOreEW
         initial-size: 10
